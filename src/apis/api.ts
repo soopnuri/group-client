@@ -1,3 +1,4 @@
+import { RequestInit } from "next/dist/server/web/spec-extension/request";
 import { fetchWithInterceptors } from "./utils";
 
 type fetchMethod = "GET" | "POST" | "PUT" | "DELETE";
@@ -9,6 +10,7 @@ interface APIProps {
   method: fetchMethod;
   body?: any;
   type?: ContentType;
+  accessToken?: string;
 }
 
 interface Headers {
@@ -21,26 +23,24 @@ export const callAPI = async ({
   method,
   body = undefined,
   type = "JSON",
+  accessToken,
 }: APIProps) => {
   try {
-    const url = `${process.env.NEXT_PUBLIC_NEST_ENDPOINT}/${dest}/${uri}`;
+    const url = `${process.env.NEXT_PUBLIC_NEST_ENDPOINT}${dest}${uri}`;
     const headers: Headers = {
-      "Access-Control-Allow-Credentials": "true",
-      "Access-Control-Allow-Origin": "*",
-      // Authorization: `Bearer ${accessToken}`,
+      Authorization: `Bearer ${accessToken}`,
     };
 
     if (type !== "FILE") {
       headers["Content-Type"] = "application/json;charset=UTF-8";
     }
 
-    const config = {
+    const config: RequestInit = {
       method,
       headers,
       body: type === "JSON" ? JSON.stringify(body) : body,
     };
     const result = (await fetch(url, config)).json();
-    console.log(result);
 
     return result;
   } catch (error) {
