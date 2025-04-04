@@ -18,22 +18,28 @@ const CommunityIntro = ({ slug = "/" }: CommunityProps) => {
 
   const joinCommunity = async () => {
     // TODO: 커뮤니티 가입 로 직 구현
+    // console.log(session, community?.id);
+    // return;
+    if (!session?.user?.id && !community?.id) return;
+
     if (slug !== "/") {
       const payload = {
         userId: Number(session?.user?.id) || 0,
         communityId: community?.id || 0,
       };
+
       const result = await fetchJoinCommunities(
-        session?.accessToken,
         slug,
         payload
       );
+
+      console.log('가입결과:', result);
     }
   };
 
   const createPost = () => {
     navigate.push(`/${slug}/submit`);
-  }
+  };
 
   return (
     <section className={styles.container}>

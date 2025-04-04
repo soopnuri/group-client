@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import * as styles from "./styles.css";
 // assets
 import { FiChevronLeft } from "react-icons/fi";

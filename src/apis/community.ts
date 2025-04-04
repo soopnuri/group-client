@@ -19,14 +19,12 @@ export const fetchGetCommunities = (accessToken: string | undefined) => {
     uri,
     method: "GET",
     body: undefined,
-    accessToken,
   });
 
   return res;
 };
 
 export const fetchJoinCommunities = (
-  accessToken: string | undefined,
   slug: string,
   payload: {
     communityId: number;
@@ -42,7 +40,6 @@ export const fetchJoinCommunities = (
       communityId: payload.communityId,
       userId: payload.userId,
     },
-    accessToken,
   });
 
   return res;
