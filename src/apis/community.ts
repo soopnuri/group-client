@@ -12,7 +12,7 @@ export interface Communities {
   slug: string;
 }
 
-export const fetchGetCommunities = (accessToken: string | undefined) => {
+export const fetchGetCommunities = () => {
   const uri = "";
   const res = callAPI({
     dest,
@@ -24,13 +24,10 @@ export const fetchGetCommunities = (accessToken: string | undefined) => {
   return res;
 };
 
-export const fetchJoinCommunities = (
-  slug: string,
-  payload: {
-    communityId: number;
-    userId: number;
-  }
-) => {
+export const fetchJoinCommunities = (payload: {
+  communityId: number;
+  userId: number;
+}) => {
   const uri = `/join`;
   const res = callAPI({
     dest,

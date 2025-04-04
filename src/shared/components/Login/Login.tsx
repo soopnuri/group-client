@@ -1,11 +1,11 @@
 "use client";
 
-import { signIn, signOut, useSession } from "next-auth/react";
 import * as styles from "./styles.css";
 import { Divider } from "../Divider/Divider";
 import { FcGoogle } from "react-icons/fc";
 const Login = () => {
-  const { data: session, status } = useSession();
+    // TODO: useSession 삭제
+    return <div></div>;
 
   if (status === "unauthenticated") {
     return (

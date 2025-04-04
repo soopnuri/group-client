@@ -3,17 +3,21 @@ import Image from "next/image";
 import * as styles from "./styles.css";
 import Login from "@/shared/components/Login/Login";
 import { useModal } from "@/shared/hooks/useModal";
-import { signOut, useSession } from "next-auth/react";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import useOnClickOutside from "@/shared/hooks/useOnClickOutside";
 ///
 import { CgProfile } from "react-icons/cg";
 import { IoExitOutline } from "react-icons/io5";
 import { IoSettingsOutline } from "react-icons/io5";
+import { useAtom } from "jotai";
+import { userStore } from "@/shared/store/atom";
+import { useRouter } from "next/navigation";
+import { fetchGetUser } from "@/apis/auth";
 
 const Header = () => {
   const { setModalAtom } = useModal();
-  const { data: session, status } = useSession();
+  const useNavigate = useRouter();
+  const [userAtom, setUserAtom] = useAtom(userStore);
 
   const [isOpenSet, isSetOpenSet] = useState(false);
 
@@ -22,6 +26,26 @@ const Header = () => {
   useOnClickOutside(profileMenuRef as React.RefObject<HTMLElement>, () =>
     isSetOpenSet(false)
   );
+
+  const handleGoogleLogin = () => {
+    useNavigate.push(`${process.env.NEXT_PUBLIC_NEST_ENDPOINT}/auths/google`);
+  };
+
+  useEffect(() => {
+    const fetchUserProfile = async () => {
+      const response = await fetchGetUser();
+
+      if (response?.success === true) {
+        setUserAtom({ ...response.data });
+      } else {
+        setUserAtom((prev) => ({ ...prev, user: { id: null } }));
+      }
+    };
+
+    if (userAtom.id === null) {
+      fetchUserProfile();
+    }
+  }, []);
 
   return (
     <header className={styles.container}>
@@ -33,8 +57,9 @@ const Header = () => {
         alt="로고"
       />
       <article>검색</article>
+      <div onClick={() => handleGoogleLogin()}>임시버튼 로그인</div>
       <section ref={profileMenuRef}>
-        {status !== "loading" && session?.user ? (
+        {userAtom?.id ? (
           <>
             <div
               className={styles.profile}
@@ -44,7 +69,7 @@ const Header = () => {
                 className={styles.image}
                 width={36}
                 height={36}
-                src={session.user.image || "profile.png"}
+                src={userAtom.image || "profile.png"}
                 alt="프로필 이미지"
               />
             </div>
@@ -52,7 +77,7 @@ const Header = () => {
           </>
         ) : (
           <>
-            {!session?.user ? (
+            {!userAtom?.id ? (
               <div
                 onClick={() =>
                   setModalAtom({ isOpen: true, content: <Login /> })
@@ -85,7 +110,7 @@ const SetDisplay = () => {
         <CgProfile size={20} />
         View Profile
       </div>
-      <div className={styles.setItem} onClick={() => signOut()}>
+      <div className={styles.setItem} onClick={() => console.log("logout")}>
         <IoExitOutline size={21} />
         Log Out
       </div>

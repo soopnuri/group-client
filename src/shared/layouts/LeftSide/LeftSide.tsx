@@ -1,5 +1,4 @@
 "use client";
-import { useEffect } from "react";
 import * as styles from "./styles.css";
 // assets
 import { FiChevronLeft } from "react-icons/fi";
@@ -8,9 +7,8 @@ import { FiChevronDown } from "react-icons/fi";
 import { FiHome } from "react-icons/fi";
 import { FiBarChart } from "react-icons/fi";
 import { FiMap } from "react-icons/fi";
-import { useSession } from "next-auth/react";
 import { FiPlus } from "react-icons/fi";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { Communities, fetchGetCommunities } from "@/apis/community";
 import { Divider } from "@/shared/components/Divider/Divider";
 import { useRouter } from "next/navigation";
@@ -19,21 +17,15 @@ import { settingStore } from "@/shared/store/atom";
 
 const LeftSide = () => {
   const navigate = useRouter();
-  const { data: session } = useSession();
-  const queryClient = useQueryClient();
-  const { isLoading, data } = useQuery({
-    queryKey: ["communities", session?.accessToken],
-    queryFn: () => fetchGetCommunities(session?.accessToken),
-    select: (data) => data.data,
-  });
-
   const [settingAtom, setSettingAtom] = useAtom(settingStore);
 
-  useEffect(() => {
-    if (data) {
-      queryClient.setQueryData(["communities"], data);
-    }
-  }, [isLoading, data]);
+  const { isLoading, data } = useQuery({
+    queryKey: ["communities"],
+    queryFn: () => fetchGetCommunities(),
+    select: (data) => data.data,
+    staleTime: 1000 * 60 * 5, // 5분
+  });
+
   if (isLoading) return <div>Loading...</div>;
 
   const handleLocation = (location: string) => {

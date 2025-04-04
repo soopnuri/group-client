@@ -8,14 +8,14 @@ export interface User {
   email: string;
   image: string;
 }
-export const signInWithGoogle = async ({ googleId, name, email, image }: User) => {
-  const uri = "/google/login";
+export const fetchGetUser = async () => {
+  const uri = "";
 
   const res = await callAPI({
     dest,
     uri,
-    method: "POST",
-    body: { googleId, name, email, image },
+    method: "GET",
+    body: undefined,
   });
 
   return res;

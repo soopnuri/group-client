@@ -21,30 +21,25 @@ export interface Post {
   };
 }
 
-export const fetchGetPosts = (accessToken: string | undefined) => {
+export const fetchGetPosts = () => {
   const uri = "";
   const res = callAPI({
     dest,
     uri,
     method: "GET",
     body: undefined,
-    accessToken,
   });
 
   return res;
 };
 
-export const fetchGetSlugByPosts = (
-  slug: string,
-  accessToken: string | undefined
-) => {
+export const fetchGetSlugByPosts = (slug: string) => {
   const uri = `/community/${slug}`;
   const res = callAPI({
     dest,
     uri,
     method: "GET",
     body: undefined,
-    accessToken,
   });
 
   return res;

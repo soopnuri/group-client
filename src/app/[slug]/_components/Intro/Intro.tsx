@@ -1,39 +1,45 @@
 "use client";
-import { Communities, fetchJoinCommunities } from "@/apis/community";
-import { useQueryClient } from "@tanstack/react-query";
+import {
+  Communities,
+  fetchGetCommunities,
+  fetchJoinCommunities,
+} from "@/apis/community";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import * as styles from "./styles.css";
 import { FiPlus } from "react-icons/fi";
 import { FiLogIn } from "react-icons/fi";
-import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import { useAtom } from "jotai";
+import { userStore } from "@/shared/store/atom";
 interface CommunityProps {
   slug: string;
 }
 const CommunityIntro = ({ slug = "/" }: CommunityProps) => {
-  const { data: session } = useSession();
   const navigate = useRouter();
-  const queryClient = useQueryClient();
-  const communities = queryClient.getQueryData<Communities[]>(["communities"]);
-  const community = communities?.find((v: any) => v.slug === slug);
+  const [userAtom, setUserAtom] = useAtom(userStore);
+
+  const { isLoading, data } = useQuery({
+    queryKey: ["communities"],
+    queryFn: () => fetchGetCommunities(),
+    select: (data) => data.data,
+    staleTime: 1000 * 60 * 5, // 5분
+  });
+
+  if (isLoading) return <div>Loading...</div>;
+  const community = data?.find((v: any) => v.slug === slug);
 
   const joinCommunity = async () => {
-    // TODO: 커뮤니티 가입 로 직 구현
-    // console.log(session, community?.id);
-    // return;
-    if (!session?.user?.id && !community?.id) return;
+    if (!userAtom?.id) return;
 
     if (slug !== "/") {
       const payload = {
-        userId: Number(session?.user?.id) || 0,
+        userId: Number(userAtom.id) || 0,
         communityId: community?.id || 0,
       };
 
-      const result = await fetchJoinCommunities(
-        slug,
-        payload
-      );
+      const result = await fetchJoinCommunities(payload);
 
-      console.log('가입결과:', result);
+      console.log("가입결과:", result);
     }
   };
 

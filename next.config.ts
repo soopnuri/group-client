@@ -9,14 +9,14 @@ const nextConfig = {
     path: "http://localhost:3000",
     // domains: ['']
   },
-  // async rewrites() {
-  //   return [
-  //     {
-  //       source: '/proxy-api/:path*',
-  //       destination: 'http://localhost:3001/:path*'
-  //     }
-  //   ]
-  // }
+  async rewrites() {
+    return [
+      {
+        source: "/proxy-api/:path*",
+        destination: "http://localhost:3001/:path*",
+      },
+    ];
+  },
 };
 
 // Apply plugins

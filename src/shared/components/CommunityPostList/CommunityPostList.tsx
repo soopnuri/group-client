@@ -4,13 +4,14 @@ import Select from "../Select/Select";
 import { fetchGetPosts, fetchGetSlugByPosts } from "@/apis/post";
 import type { Post } from "@/apis/post";
 import { useQuery } from "@tanstack/react-query";
-import { useSession } from "next-auth/react";
 import { timeAgo } from "@/shared/libs/lib";
 import { Divider } from "../Divider/Divider";
 import Image from "next/image";
 import { FiMaximize2 } from "react-icons/fi";
 import { useState } from "react";
 import { FiX } from "react-icons/fi";
+import { useAtom } from "jotai";
+import { userStore } from "@/shared/store/atom";
 // TODO: 삭제
 const OPTIONS = [
   {
@@ -31,13 +32,10 @@ interface PostProps {
   slug: string;
 }
 const CommunityPostList = ({ slug = "/" }: PostProps) => {
-  const { data: session } = useSession();
+  // TODO: useSession 삭제
   const { isLoading, data } = useQuery({
-    queryKey: ["post", slug, session?.accessToken],
-    queryFn: () =>
-      slug !== "/"
-        ? fetchGetSlugByPosts(slug, session?.accessToken)
-        : fetchGetPosts(session?.accessToken),
+    queryKey: ["post", slug],
+    queryFn: () => (slug !== "/" ? fetchGetSlugByPosts(slug) : fetchGetPosts()),
     select: (data) => data.data,
   });
 

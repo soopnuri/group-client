@@ -1,7 +1,6 @@
 import "@/shared/styles/reset.css";
 import "@/shared/styles/theme.css";
 import type { Metadata } from "next";
-import AuthProvider from "./AuthProvider";
 import { Providers } from "@/shared/store/providers";
 import Modal from "@/shared/components/Modal/Modal";
 import Provider from "@/shared/provider/Provider";
@@ -22,11 +21,9 @@ export default function RootLayout({
       <body>
         <Providers>
           <Provider>
-            <AuthProvider>
-              <Modal />
-              <Header />
-              <main className={styles.main}>{children}</main>
-            </AuthProvider>
+            <Modal />
+            <Header />
+            <main className={styles.main}>{children}</main>
           </Provider>
         </Providers>
       </body>

@@ -1,6 +1,6 @@
 import { atom } from "jotai";
 import { JSX } from "react";
-import { atomWithStorage } from "jotai/utils";
+import { atomWithStorage, createJSONStorage } from "jotai/utils";
 
 export const modalStore = atom<{
   key?: string;
@@ -19,13 +19,32 @@ interface SettingAtom {
     communities: boolean;
   };
 }
-export const settingStore = atomWithStorage<SettingAtom>(
-  "settingStoreKey",
-  {
-    location: "/",
-    isLeftSide: true,
-    isLeftTab: {
-      communities: true,
-    },
-  }
+export const settingStore = atomWithStorage<SettingAtom>("settingStoreKey", {
+  location: "/",
+  isLeftSide: true,
+  isLeftTab: {
+    communities: true,
+  },
+});
+
+export const storage = createJSONStorage<UserAtom>(() =>
+  typeof window !== "undefined" ? (window.sessionStorage as any) : undefined
+);
+
+interface UserAtom {
+  id: number | null;
+  name: string;
+  email: string;
+  image?: string;
+}
+const defaultUser = {
+  id: null,
+  name: "",
+  email: "",
+  image: undefined,
+};
+export const userStore = atomWithStorage<UserAtom>(
+  "user",
+  defaultUser as UserAtom,
+  storage
 );
