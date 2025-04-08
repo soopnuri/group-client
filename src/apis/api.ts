@@ -31,9 +31,7 @@ export const callAPI = async ({
     headers.set("Content-Type", "application/json;charset=UTF-8");
     requestBody = JSON.stringify(body);
   } else if (type === "FILE") {
-    // 파일 타입일 경우 Content-Type을 직접 설정하지 않아야 브라우저가 올바르게 설정함
-    // headers['Content-Type'] = 'multipart/form-data'; // 필요하다면 명시
-    requestBody = body; // FormData 객체 등
+    requestBody = body;
   }
 
   const options: FetchOptions = {

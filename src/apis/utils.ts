@@ -50,19 +50,18 @@ export async function fetchWithAuth(url: string, options: RequestInit = {}) {
 
 // --- 실제 fetch를 수행하는 함수 (credentials 옵션 추가) ---
 async function performAuthFetch(url: string, options: RequestInit = {}) {
-  // options 타입 명시
   const headers = {
     ...options.headers,
     "Content-Type":
       (options.headers as Record<string, string>)?.["Content-Type"] ||
-      "application/json", // 타입 단언 추가
+      "application/json",
   };
 
   // [중요] credentials 옵션 포함 확인 (fetchWithAuth에서 전달됨)
   const fetchOptions: RequestInit = {
     ...options,
     headers,
-    credentials: options.credentials || "include", // 기본값 'include' 설정
+    credentials: options.credentials || "include",
   };
 
   const response = await fetch(
@@ -74,7 +73,6 @@ async function performAuthFetch(url: string, options: RequestInit = {}) {
 
   if (!response.ok) {
     if (response.status === 401) {
-      // 이 에러는 Access Token이 유효하지 않다는 의미
       throw new AuthError("Unauthorized access - Initial request failed", 401);
     }
 
@@ -83,7 +81,7 @@ async function performAuthFetch(url: string, options: RequestInit = {}) {
       const errorBody = response;
       throw new Error(
         `HTTP error ${response.status}: ${
-          (errorBody as any).message || response.statusText // 타입 단언 추가
+          (errorBody as any).message || response.statusText
         }`
       );
     } catch (e) {
@@ -92,7 +90,6 @@ async function performAuthFetch(url: string, options: RequestInit = {}) {
     }
   }
 
-  // 성공 시 결과 반환 (기존 로직 유지)
   if (
     response.status === 204 ||
     response.headers.get("content-length") === "0"
