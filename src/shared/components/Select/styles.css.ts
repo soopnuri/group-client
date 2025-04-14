@@ -3,11 +3,6 @@ import { style } from "@vanilla-extract/css";
 
 export const container = style({
   position: "relative",
-  // selectors: {
-  //   "&:hover": {
-  //     backgroundColor: vars.color.gray_100,
-  //   },
-  // },
 });
 
 export const select = style({
@@ -37,6 +32,8 @@ export const optionBox = style({
   top: 40,
   borderRadius: vars.border.normal,
   boxShadow: "0px 2px 6px rgba(0, 0, 0, 0.2)",
+  backgroundColor: 'white',
+  zIndex: 100,
 });
 export const option = style({
   padding: "1rem",

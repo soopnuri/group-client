@@ -5,8 +5,6 @@ import { FiChevronLeft } from "react-icons/fi";
 import { FiMenu } from "react-icons/fi";
 import { FiChevronDown } from "react-icons/fi";
 import { FiHome } from "react-icons/fi";
-import { FiBarChart } from "react-icons/fi";
-import { FiMap } from "react-icons/fi";
 import { FiPlus } from "react-icons/fi";
 import { useQuery } from "@tanstack/react-query";
 import { Communities, fetchGetCommunities } from "@/apis/community";
@@ -19,17 +17,15 @@ const LeftSide = () => {
   const navigate = useRouter();
   const [settingAtom, setSettingAtom] = useAtom(settingStore);
 
-  const { isLoading, data } = useQuery({
+  const { data } = useQuery({
     queryKey: ["communities"],
     queryFn: () => fetchGetCommunities(),
     select: (data) => data.data,
     staleTime: 1000 * 60 * 5, // 5분
   });
 
-  if (isLoading) return <div>Loading...</div>;
-
-  const handleLocation = (location: string) => {
-    setSettingAtom((prev) => ({ ...prev, location: location }));
+  const handleLocation = (location: string, communiyId: number | null) => {
+    setSettingAtom((prev) => ({ ...prev, location: location, communityId: communiyId }));
     navigate.push(`/${location}`);
   };
 
@@ -51,7 +47,7 @@ const LeftSide = () => {
         <>
           <section>
             <div
-              onClick={() => handleLocation("/")}
+              onClick={() => handleLocation("/", null)}
               className={`${styles.button} ${
                 settingAtom.location === "/" && styles.active
               }`}
@@ -61,7 +57,7 @@ const LeftSide = () => {
               />
               메인
             </div>
-            <div
+            {/* <div
               className={`${styles.button} ${
                 settingAtom.location === "popular" && styles.active
               }`}
@@ -84,7 +80,7 @@ const LeftSide = () => {
                 }
               />
               커뮤니티
-            </div>
+            </div> */}
           </section>
           <Divider />
           <section>
@@ -122,7 +118,7 @@ const LeftSide = () => {
                   <div
                     key={v.id}
                     className={styles.button}
-                    onClick={() => handleLocation(v.slug)}
+                    onClick={() => handleLocation(v.slug, v.id)}
                   >
                     /{v.slug}
                   </div>

@@ -9,14 +9,12 @@ import useOnClickOutside from "@/shared/hooks/useOnClickOutside";
 import { CgProfile } from "react-icons/cg";
 import { IoExitOutline } from "react-icons/io5";
 import { IoSettingsOutline } from "react-icons/io5";
-import { useAtom } from "jotai";
-import { userStore } from "@/shared/store/atom";
-import { useRouter } from "next/navigation";
-import { fetchGetUser } from "@/apis/auth";
+import { useAtom, useAtomValue, useSetAtom } from "jotai";
+import { DEFAULT_USER, userStore } from "@/shared/store/atom";
+import { fetchGetUser, fetchLogout } from "@/apis/auth";
 
 const Header = () => {
   const { setModalAtom } = useModal();
-  const useNavigate = useRouter();
   const [userAtom, setUserAtom] = useAtom(userStore);
 
   const [isOpenSet, isSetOpenSet] = useState(false);
@@ -26,10 +24,6 @@ const Header = () => {
   useOnClickOutside(profileMenuRef as React.RefObject<HTMLElement>, () =>
     isSetOpenSet(false)
   );
-
-  const handleGoogleLogin = () => {
-    useNavigate.push(`${process.env.NEXT_PUBLIC_NEST_ENDPOINT}/auths/google`);
-  };
 
   useEffect(() => {
     const fetchUserProfile = async () => {
@@ -57,7 +51,6 @@ const Header = () => {
         alt="로고"
       />
       <article>검색</article>
-      <div onClick={() => handleGoogleLogin()}>임시버튼 로그인</div>
       <section ref={profileMenuRef}>
         {userAtom?.id ? (
           <>
@@ -104,13 +97,23 @@ const Header = () => {
 export default Header;
 
 const SetDisplay = () => {
+  const setUserAtom = useSetAtom(userStore);
+  const handleLogout = async () => {
+    const res = await fetchLogout();
+
+    if (res.success) {
+      window.location.reload();
+    }
+    setUserAtom(DEFAULT_USER);
+  };
+
   return (
     <section className={styles.setContainer}>
       <div className={styles.setItem}>
         <CgProfile size={20} />
         View Profile
       </div>
-      <div className={styles.setItem} onClick={() => console.log("logout")}>
+      <div className={styles.setItem} onClick={handleLogout}>
         <IoExitOutline size={21} />
         Log Out
       </div>
