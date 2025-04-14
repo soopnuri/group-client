@@ -45,6 +45,7 @@ export const vars = createGlobalTheme(":root", {
     normal: "0.6rem",
     medium: "0.9rem",
     large: "1.2rem",
+    circle: "50%",
   },
 });
 

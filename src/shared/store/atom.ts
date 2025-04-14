@@ -14,6 +14,7 @@ export const modalStore = atom<{
 
 interface SettingAtom {
   location: string;
+  communityId: number | null;
   isLeftSide: boolean;
   isLeftTab: {
     communities: boolean;
@@ -21,6 +22,7 @@ interface SettingAtom {
 }
 export const settingStore = atomWithStorage<SettingAtom>("settingStoreKey", {
   location: "/",
+  communityId: null,
   isLeftSide: true,
   isLeftTab: {
     communities: true,
@@ -37,7 +39,7 @@ interface UserAtom {
   email: string;
   image?: string;
 }
-const defaultUser = {
+export const DEFAULT_USER = {
   id: null,
   name: "",
   email: "",
@@ -45,6 +47,6 @@ const defaultUser = {
 };
 export const userStore = atomWithStorage<UserAtom>(
   "user",
-  defaultUser as UserAtom,
+  DEFAULT_USER as UserAtom,
   storage
 );
