@@ -3,9 +3,27 @@ import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import * as styles from "./styles.css";
 import { useForm } from "react-hook-form";
+import { fetchCreatePost, fetchGetPost } from "@/apis/post";
+import { useAtomValue } from "jotai";
+import { settingStore, userStore } from "@/shared/store/atom";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useQuery } from "@tanstack/react-query";
 
 const CreatePost = () => {
   const { register, handleSubmit, setValue } = useForm();
+  const userAtom = useAtomValue(userStore);
+  const settingAtom = useAtomValue(settingStore);
+  const router = useRouter();
+  const searchParams = useSearchParams();
+
+  const idFromQuery = searchParams.get("id");
+
+  const { isLoading, data } = useQuery({
+    enabled: !!idFromQuery,
+    queryKey: ["post", idFromQuery],
+    queryFn: () => fetchGetPost(Number(idFromQuery)),
+    select: (data) => data.data,
+  });
 
   const editor = useEditor({
     extensions: [StarterKit],
@@ -15,8 +33,18 @@ const CreatePost = () => {
     },
   });
 
-  const handleSave = (data: any) => {
-    console.log(data);
+  const handleSave = async (data: any) => {
+    const payload = {
+      title: data.title,
+      content: data.content,
+      authorId: userAtom.id,
+      communityId: settingAtom.communityId,
+    };
+
+    const res = await fetchCreatePost(payload);
+    if (res.success) {
+      router.back();
+    }
   };
 
   return (

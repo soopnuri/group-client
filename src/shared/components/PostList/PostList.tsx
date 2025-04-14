@@ -10,8 +10,13 @@ import Image from "next/image";
 import { FiMaximize2 } from "react-icons/fi";
 import { useState } from "react";
 import { FiX } from "react-icons/fi";
-import { useAtom } from "jotai";
+import { useAtomValue } from "jotai";
 import { userStore } from "@/shared/store/atom";
+import { FiEdit } from "react-icons/fi";
+import { useRouter } from "next/navigation";
+
+import Vote from "../Vote/Vote";
+
 // TODO: 삭제
 const OPTIONS = [
   {
@@ -31,30 +36,41 @@ const OPTIONS = [
 interface PostProps {
   slug: string;
 }
-const CommunityPostList = ({ slug = "/" }: PostProps) => {
-  // TODO: useSession 삭제
-  const { isLoading, data } = useQuery({
+const PostList = ({ slug = "/" }: PostProps) => {
+  const { data } = useQuery({
     queryKey: ["post", slug],
     queryFn: () => (slug !== "/" ? fetchGetSlugByPosts(slug) : fetchGetPosts()),
-    select: (data) => data.data,
   });
 
-  if (isLoading) return <div>Loading...</div>;
+  const posts = data?.data;
 
   return (
     <div className={styles.container}>
       <Select title="Sort By" options={OPTIONS} />
       <Divider />
-      {data?.length >= 1 &&
-        data.map((post: Post) => <Post key={post.id} {...post} />)}
+      {Array.isArray(posts) &&
+        posts?.length >= 1 &&
+        posts.map((post: Post) => (
+          <PostPreview
+            key={`${post.community.slug}/${post.id}`}
+            {...post}
+            slug={slug}
+          />
+        ))}
     </div>
   );
 };
 
-export default CommunityPostList;
+export default PostList;
 
-const Post = (post: Post) => {
+const PostPreview = ({ slug, ...post }: Post & { slug: string }) => {
   const [isOpen, setIsOpen] = useState(false);
+  const userAtom = useAtomValue(userStore);
+  const router = useRouter();
+
+  const handleEdit = (slug: string, postId: number) => {
+    router.push(`${slug}/submit/?id=${postId}`);
+  };
 
   return (
     <section className={styles.postWrapper} key={post.id}>
@@ -68,11 +84,19 @@ const Post = (post: Post) => {
           alt=""
         />
         <div className={styles.postItem}>
-          <span className={styles.postSlug}>
+          <span
+            className={styles.postSlug}
+            onClick={() => router.push(`/${post.community.slug}`)}
+          >
             /{post.community.slug} • {timeAgo(post.updatedAt)}
           </span>
-          <span className={styles.postTitle}>{post.title}</span>
-          <span>
+          <span
+            className={styles.postTitle}
+            onClick={() => router.push(`/${post.community.slug}/${post.id}`)}
+          >
+            {post.title}
+          </span>
+          <span className={styles.postOptions}>
             <span
               className={`${styles.iconWrap} ${styles.button}`}
               onClick={() => setIsOpen(!isOpen)}
@@ -83,12 +107,21 @@ const Post = (post: Post) => {
                 <FiMaximize2 className={`${styles.reverseIcon}`} size={14} />
               )}
             </span>
+            <Vote slug={slug} post={post} />
+            {post.authorId === userAtom.id && (
+              <span
+                className={`${styles.iconWrap} ${styles.button}`}
+                onClick={() => handleEdit(post.community.slug, post.id)}
+              >
+                <FiEdit />
+              </span>
+            )}
           </span>
         </div>
       </div>
       {isOpen && (
         <div className={styles.postContent}>
-          <span>{post.content}</span>
+          <span dangerouslySetInnerHTML={{ __html: post.content }} />
         </div>
       )}
       <Divider />

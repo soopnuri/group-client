@@ -1,10 +1,9 @@
 "use client";
 import {
-  Communities,
   fetchGetCommunities,
   fetchJoinCommunities,
 } from "@/apis/community";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import * as styles from "./styles.css";
 import { FiPlus } from "react-icons/fi";
 import { FiLogIn } from "react-icons/fi";
@@ -37,9 +36,8 @@ const CommunityIntro = ({ slug = "/" }: CommunityProps) => {
         communityId: community?.id || 0,
       };
 
+      // TODO: 가입 후 처리
       const result = await fetchJoinCommunities(payload);
-
-      console.log("가입결과:", result);
     }
   };
 
