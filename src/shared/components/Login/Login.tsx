@@ -3,31 +3,26 @@
 import * as styles from "./styles.css";
 import { Divider } from "../Divider/Divider";
 import { FcGoogle } from "react-icons/fc";
+import { useRouter } from "next/navigation";
+import { useForm } from "react-hook-form";
 const Login = () => {
-    // TODO: useSession 삭제
-    return <div></div>;
+  const { handleSubmit, register } = useForm();
+  const useNavigate = useRouter();
 
-  if (status === "unauthenticated") {
-    return (
-      <div className={styles.container}>
-        <section className={styles.loginBox}>
-          <strong className={styles.title}>환영합니다</strong>
-          <p>SNS 로그인</p>
-          <Divider />
-          <button className={styles.google} onClick={() => signIn()}>
-            <FcGoogle />
-          </button>
-        </section>
-      </div>
-    );
-  }
+  const handleLogin = (data: any) => {
+    console.log(data);
+  };
+  const handleGoogleLogin = () => {
+
+    useNavigate.push(`${process.env.NEXT_PUBLIC_NEST_ENDPOINT}/auths/google`);
+  };
 
   return (
-    <div className={styles.container}>
-      <p>안녕하세요, {session?.user?.name}!</p>
-      <button className={styles.google} onClick={() => signOut()}>
-        로그아웃
-      </button>
+    <div>
+      <div onClick={handleGoogleLogin}>
+        <FcGoogle />
+        구글 로그인
+      </div>
     </div>
   );
 };
