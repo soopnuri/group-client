@@ -1,6 +1,6 @@
 import { fetchWithAuth } from "./utils";
 
-type fetchMethod = "GET" | "POST" | "PUT" | "DELETE";
+type fetchMethod = "GET" | "POST" | "PUT" | "DELETE" | "PATCH";
 type ContentType = "JSON" | "FILE";
 export interface FetchOptions extends RequestInit {
   method: fetchMethod;

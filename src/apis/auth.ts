@@ -20,3 +20,14 @@ export const fetchGetUser = async () => {
 
   return res;
 };
+
+export const fetchLogout = async () => {
+  const uri = "/logout";
+  const res = await callAPI({
+    dest,
+    uri,
+    method: "GET",
+    body: undefined,
+  });
+  return res;
+};
