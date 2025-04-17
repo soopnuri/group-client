@@ -1,10 +1,13 @@
 import { vars } from "@/shared/styles/theme.css";
 import { globalStyle, style } from "@vanilla-extract/css";
 
+export const comment = style({
+  gap: "0.2rem",
+  fontSize: vars.font.small,
+});
 export const container = style({
   display: "flex",
   flexDirection: "column",
-  // padding: "2rem",
   paddingTop: "2rem",
   width: "100%",
 });

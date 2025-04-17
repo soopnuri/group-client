@@ -14,6 +14,7 @@ import { useAtomValue } from "jotai";
 import { userStore } from "@/shared/store/atom";
 import { FiEdit } from "react-icons/fi";
 import { useRouter } from "next/navigation";
+import { FiMessageCircle } from "react-icons/fi";
 
 import Vote from "../Vote/Vote";
 
@@ -43,6 +44,8 @@ const PostList = ({ slug = "/" }: PostProps) => {
   });
 
   const posts = data?.data;
+
+  console.log(posts);
 
   return (
     <div className={styles.container}>
@@ -116,6 +119,10 @@ const PostPreview = ({ slug, ...post }: Post & { slug: string }) => {
                 <FiEdit />
               </span>
             )}
+            <span className={`${styles.iconWrap} ${styles.comment}`}>
+              <FiMessageCircle size={14} />
+              {post._count.comments}
+            </span>
           </span>
         </div>
       </div>

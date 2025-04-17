@@ -20,6 +20,9 @@ export interface Post {
     moderators: string[];
     createdAt: string;
   };
+  _count: {
+    comments: number;
+  }
 }
 
 export const fetchGetPosts = () => {
